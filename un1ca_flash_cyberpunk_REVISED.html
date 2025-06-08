@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UN1CA Flash Flow - by @rmdhirr</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      max-width: 880px;
+      margin: 2rem auto;
+      padding: 2rem;
+      line-height: 1.75;
+    }
+    h1, h2, h3 {
+      color: #00ffcc;
+      border-left: 5px solid #00ffcc;
+      padding-left: 0.5rem;
+    }
+    code, pre {
+      background: #1b1b1b;
+      color: #72f7ff;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+    th, td {
+      border: 1px solid #2c2c2c;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #1c1c1c;
+      color: #00ffcc;
+    }
+    .note {
+      background-color: #161616;
+      border-left: 4px solid #ff00aa;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    a {
+      color: #00ffe1;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⚡ UN1CA R4 Flash Flow – Root, Vendor Fix, KSU Aware ⚡</h1>
+  <p><strong>by <a href="https://t.me/rmdhirr" target="_blank">@rmdhirr</a></strong> – for Samsung M51 Snapdragon (SM-M515F)</p>
+
+  <div class="note">
+    <strong>🔍 COMMUNITY VERIFIED:</strong><br>
+    ✔️ UN1CA R4 includes <strong>KernelSU (KSU)</strong> by default.<br>
+    ✔️ No need to flash Magisk unless you want Zygisk/Magisk modules or compatibility.<br>
+    ✔️ Kernel flashing method is consistent: TWRP → Install Image → Target: <code>Boot</code><br>
+    ⚠️ Always ensure the custom kernel matches your ROM base (e.g., UN1CA-compatible).<br><br>
+    
+    <strong>⚠️ NOTE:</strong> UN1CA includes <strong>KSU (KernelSU)</strong> built-in. <br>
+    This means <strong>you already have root access</strong> through KSU. Flashing Magisk is <em>optional</em> and only needed if you prefer its ecosystem.
+  </div>
+
+  <h2>🧰 Required Files</h2>
+  <ul>
+    <li>ROM: <code>UN1CA_2.5.6-f7d1199_20250603_m51-sign.zip</code></li>
+    <li>Optional Root: <code>magisk-patched-boot.img</code> (if not using KSU)</li>
+    <li>Optional Vendor Fix: <code>vendor.img</code> (for Bluetooth fix)</li>
+    <li>Odin TWRP: <code>twrp.tar</code></li>
+    <li>vbmeta disabler: <code>vbmeta_disabled.tar</code></li>
+  </ul>
+
+  <h2>🧨 Flash Sequence</h2>
+
+  <h3>1. Prep in Odin</h3>
+  <ul>
+    <li>Enter <strong>Download Mode</strong>: Power + Vol Down + USB in</li>
+    <li>Load in Odin:</li>
+    <ul>
+      <li><code>AP</code> → <code>twrp.tar</code></li>
+      <li><code>USERDATA</code> → <code>vbmeta_disabled.tar</code></li>
+    </ul>
+    <li>Uncheck <strong>Auto Reboot</strong></li>
+    <li>Click <strong>Start</strong> → Wait for <strong>PASS</strong></li>
+  </ul>
+
+  <h3>2. Boot Into TWRP Manually</h3>
+  <p>After PASS: Immediately press and hold <strong>Power + Vol Up</strong> to enter TWRP. This avoids Samsung overwriting recovery.</p>
+
+  <h3>3. TWRP Initial Adjustments</h3>
+  <ul>
+    <li>Go to TWRP <strong>Settings</strong></li>
+    <li>Untick: <code>Unmount system before installing zip</code></li>
+  </ul>
+
+  <h3>4. Format & Clean</h3>
+  <ul>
+    <li><strong>Wipe > Format Data</strong> → type <code>yes</code></li>
+    <li><strong>Advanced Wipe</strong>:
+      <ul>
+        <li>Dalvik / ART Cache</li>
+        <li>Cache</li>
+        <li>Data</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>5. Transfer ROM Files</h3>
+  <pre><code>adb push UN1CA_2.5.6*.zip /data/
+adb push magisk-patched-boot.img /data/
+adb push vendor.img /data/</code></pre>
+  <p>Skip this step if using SD Card.</p>
+
+  <h3>6. Flash ROM (Pass 1)</h3>
+  <ul>
+    <li>TWRP → Install → Select ROM zip → Swipe</li>
+    <li><strong>Reboot > Recovery</strong> after flashing</li>
+  </ul>
+
+  <h3>7. Flash ROM (Pass 2)</h3>
+  <ul>
+    <li>Make sure “Unmount system before zip” is still off</li>
+    <li>Flash same ROM zip again → Swipe</li>
+    <li><strong>Reboot > Recovery</strong> again</li>
+  </ul>
+
+  <h3>8. (Optional) Flash Magisk Boot</h3>
+  <ul>
+    <li>TWRP → Install Image → <code>magisk-patched-boot.img</code></li>
+    <li>Target: Boot</li>
+    <li>Swipe to flash</li>
+    <li><em>Use only if you don't want KernelSU</em></li>
+  </ul>
+
+  <h3>9. (Optional) Flash Vendor Fix</h3>
+  <ul>
+    <li>TWRP → Install Image → <code>vendor.img</code></li>
+    <li>Target: Vendor Image</li>
+    <li>Swipe to flash</li>
+  </ul>
+
+  <h3>10. Final Format</h3>
+  <p>Once all flashes are done, go to <strong>Wipe > Format Data</strong> again → type <code>yes</code></p>
+
+  <h3>11. Boot to System</h3>
+  <p>TWRP → Reboot → System</p>
+  <p>⚠️ First boot may take 10–15 minutes. Don’t interrupt.</p>
+
+  <h2>📋 After-Flash Checklist</h2>
+  <ul>
+    <li>💡 Use <code>ksud</code> or KernelSU app if relying on built-in root</li>
+    <li>✅ Bluetooth OK? Only if vendor.img was flashed</li>
+    <li>✅ System smooth? Test UI, sensors, network</li>
+  </ul>
+
+  <h2>📊 Flash Config Matrix</h2>
+  <table>
+    <thead>
+      <tr><th>Use Case</th><th>Steps Required</th><th>Skip</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Clean Flash, No Root</td><td>1–7, 10–11</td><td>8, 9</td></tr>
+      <tr><td>Use Built-in KernelSU</td><td>1–7, 9–11</td><td>8</td></tr>
+      <tr><td>Magisk Root Instead</td><td>1–8, 10–11</td><td>9</td></tr>
+      <tr><td>Full Flash + Bluetooth Fix</td><td>All steps (1–11)</td><td>–</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>🔍 COMMUNITY VERIFIED:</strong><br>
+    ✔️ UN1CA R4 includes <strong>KernelSU (KSU)</strong> by default.<br>
+    ✔️ No need to flash Magisk unless you want Zygisk/Magisk modules or compatibility.<br>
+    ✔️ Kernel flashing method is consistent: TWRP → Install Image → Target: <code>Boot</code><br>
+    ⚠️ Always ensure the custom kernel matches your ROM base (e.g., UN1CA-compatible).<br><br>
+    
+    💻 Made with precision by <strong>@rmdhirr</strong> · Flash smart, stay rooted ⚙️
+  </div>
+
+</body>
+</html>
